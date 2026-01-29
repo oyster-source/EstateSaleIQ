@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  /* Golden Honeycomb Theme */
+  --background: #0f0f0f;
+  --foreground: #f5e6c8; /* Cream/Pale Gold */
+  
+  --gold-primary: #D4AF37;
+  --gold-secondary: #AA8C2C;
+  --gold-accent: #FFD700;
+  --gold-dim: #8a6c1e;
+  
+  --honey-grid: #1a1a1a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-gold-500: var(--gold-primary);
+  --color-gold-600: var(--gold-secondary);
+  --color-gold-400: var(--gold-accent);
+  --color-gold-800: var(--gold-dim);
+  --color-honey-grid: var(--honey-grid);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  --shadow-glow: 0 0 15px rgba(212, 175, 55, 0.3);
+  --shadow-glow-lg: 0 0 30px rgba(212, 175, 55, 0.5);
+  
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  background-image: 
+    radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
+    linear-gradient(to bottom, #0f0f0f, #0a0a0a);
+  min-height: 100vh;
+}
+
+/* Honeycomb Grid Utility - can be used as a pseudo-element or separate component */
+.bg-honeycomb {
+  background-image: 
+    linear-gradient(30deg, #1a1a1a 12%, transparent 12.5%, transparent 87%, #1a1a1a 87.5%, #1a1a1a),
+    linear-gradient(150deg, #1a1a1a 12%, transparent 12.5%, transparent 87%, #1a1a1a 87.5%, #1a1a1a),
+    linear-gradient(30deg, #1a1a1a 12%, transparent 12.5%, transparent 87%, #1a1a1a 87.5%, #1a1a1a),
+    linear-gradient(150deg, #1a1a1a 12%, transparent 12.5%, transparent 87%, #1a1a1a 87.5%, #1a1a1a),
+    linear-gradient(60deg, rgba(212, 175, 55, 0.05) 25%, transparent 25.5%, transparent 75%, rgba(212, 175, 55, 0.05) 75%, rgba(212, 175, 55, 0.05)),
+    linear-gradient(60deg, rgba(212, 175, 55, 0.05) 25%, transparent 25.5%, transparent 75%, rgba(212, 175, 55, 0.05) 75%, rgba(212, 175, 55, 0.05));
+  background-size: 80px 140px;
+  background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
