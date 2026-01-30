@@ -5,6 +5,7 @@ import { HoneycombButton } from './ui/HoneycombButton';
 import { createClient } from '@/lib/supabase/client';
 import JSZip from 'jszip';
 import { useRouter } from 'next/navigation';
+import heic2any from 'heic2any';
 
 export function UploadScanner() {
     const [uploading, setUploading] = useState(false);
@@ -44,7 +45,8 @@ export function UploadScanner() {
             const filesToUpload: File[] = [];
 
             for (const file of rawFiles) {
-                if (file.name.endsWith('.zip') || file.type === 'application/zip' || file.type === 'application/x-zip-compressed') {
+                const lowerName = file.name.toLowerCase();
+                if (lowerName.endsWith('.zip') || file.type === 'application/zip' || file.type === 'application/x-zip-compressed') {
                     try {
                         const zip = new JSZip();
                         const zipContent = await zip.loadAsync(file);
@@ -52,11 +54,28 @@ export function UploadScanner() {
                         for (const relativePath in zipContent.files) {
                             const zipEntry = zipContent.files[relativePath];
                             if (!zipEntry.dir && !relativePath.startsWith('__MACOSX') && !relativePath.startsWith('.')) {
-                                // check extensions
-                                if (relativePath.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+                                if (relativePath.match(/\.(jpg|jpeg|png|webp|gif|heic)$/i)) {
                                     const blob = await zipEntry.async('blob');
-                                    const extractedFile = new File([blob], relativePath.split('/').pop() || 'image.jpg', { type: 'image/jpeg' });
-                                    filesToUpload.push(extractedFile);
+                                    let processedFile: File;
+
+                                    if (relativePath.toLowerCase().endsWith('.heic')) {
+                                        try {
+                                            // @ts-ignore
+                                            const converted = await heic2any({
+                                                blob,
+                                                toType: "image/jpeg",
+                                                quality: 0.8
+                                            });
+                                            const resultBlob = Array.isArray(converted) ? converted[0] : converted;
+                                            processedFile = new File([resultBlob], relativePath.split('/').pop()?.replace(/\.heic$/i, '.jpg') || 'image.jpg', { type: 'image/jpeg' });
+                                        } catch (e) {
+                                            console.error("HEIC conversion failed for zip entry", relativePath, e);
+                                            continue;
+                                        }
+                                    } else {
+                                        processedFile = new File([blob], relativePath.split('/').pop() || 'image.jpg', { type: 'image/jpeg' });
+                                    }
+                                    filesToUpload.push(processedFile);
                                 }
                             }
                         }
@@ -64,7 +83,24 @@ export function UploadScanner() {
                         console.error("Error unzip:", err);
                         alert(`Failed to unzip ${file.name}`);
                     }
-                } else {
+                }
+                else if (lowerName.endsWith('.heic') || file.type === 'image/heic') {
+                    try {
+                        // @ts-ignore
+                        const converted = await heic2any({
+                            blob: file,
+                            toType: "image/jpeg",
+                            quality: 0.8
+                        });
+                        const resultBlob = Array.isArray(converted) ? converted[0] : converted;
+                        const convertedFile = new File([resultBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
+                        filesToUpload.push(convertedFile);
+                    } catch (e) {
+                        console.error("HEIC conversion failed", e);
+                        alert(`Failed to convert HEIC image: ${file.name}`);
+                    }
+                }
+                else {
                     filesToUpload.push(file);
                 }
             }
@@ -184,7 +220,7 @@ export function UploadScanner() {
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileSelect}
-                accept="image/*,.zip,application/zip,application/x-zip-compressed"
+                accept="image/*,.zip,application/zip,application/x-zip-compressed,.heic"
                 multiple
                 className="hidden"
             />

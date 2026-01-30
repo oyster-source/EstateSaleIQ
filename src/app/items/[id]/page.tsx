@@ -58,8 +58,8 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
             {/* Top Section: Image & Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 {/* Left: Image */}
-                <div className="rounded-3xl overflow-hidden border-2 border-gold-800/30 shadow-glow relative group">
-                    <img src={item.image_url} alt="Uploaded Item" className="w-full h-96 object-cover" />
+                <div className="rounded-3xl overflow-hidden border-2 border-gold-800/30 shadow-glow relative group bg-black/40 flex items-center justify-center h-96">
+                    <img src={item.image_url} alt="Uploaded Item" className="w-full h-full object-contain" />
                     <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-4 py-1 rounded-full border border-gold-500/30">
                         <span className="text-gold-400 font-mono text-sm uppercase tracking-wider">{item.search_status}</span>
                     </div>
