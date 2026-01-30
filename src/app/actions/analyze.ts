@@ -32,45 +32,62 @@ async function getSupabase() {
 export async function analyzeItemPricing(itemId: string) {
     const supabase = await getSupabase();
 
-    // 1. Fetch item
-    const { data: item, error } = await supabase
-        .from('items')
-        .select('*')
-        .eq('id', itemId)
-        .single();
+    try {
+        // 1. Fetch item
+        const { data: item, error } = await supabase
+            .from('items')
+            .select('*')
+            .eq('id', itemId)
+            .single();
 
-    if (error || !item) {
-        throw new Error('Item not found');
+        if (error || !item) {
+            throw new Error('Item not found');
+        }
+
+        // 2. Perform search
+        console.log(`Analyzing item ${itemId} with image: ${item.image_url}`);
+        const result = await findItemPrices(item.image_url);
+        console.log(`Found ${result.findings.length} matches`);
+
+        // 3. Save findings (only if we have any)
+        if (result.findings.length > 0) {
+            const findingsPayload = result.findings.map(f => ({
+                item_id: itemId,
+                source: f.source,
+                price: f.price,
+                currency: f.currency,
+                url: f.url,
+                title: f.title,
+                image_url: f.image_url
+            }));
+
+            const { error: insertError } = await supabase
+                .from('price_findings')
+                .insert(findingsPayload);
+
+            if (insertError) {
+                console.error('Failed to save findings:', insertError);
+                throw insertError;
+            }
+        }
+
+        // 4. Update item status to completed
+        await supabase
+            .from('items')
+            .update({ search_status: 'completed' })
+            .eq('id', itemId);
+
+        return result;
+
+    } catch (error) {
+        console.error("Analysis Error:", error);
+
+        // Update status to failed so it doesn't get stuck
+        await supabase
+            .from('items')
+            .update({ search_status: 'failed' })
+            .eq('id', itemId);
+
+        throw error;
     }
-
-    // 2. Perform search (Mock)
-    const result = await findItemPrices(item.image_url);
-
-    // 3. Save findings
-    const findingsPayload = result.findings.map(f => ({
-        item_id: itemId,
-        source: f.source,
-        price: f.price,
-        currency: f.currency,
-        url: f.url,
-        title: f.title,
-        image_url: f.image_url
-    }));
-
-    const { error: insertError } = await supabase
-        .from('price_findings')
-        .insert(findingsPayload);
-
-    if (insertError) {
-        console.error('Failed to save findings:', insertError);
-        throw insertError;
-    }
-
-    // 4. Update item status
-    await supabase
-        .from('items')
-        .update({ search_status: 'completed' })
-        .eq('id', itemId);
-
-    return result;
 }
