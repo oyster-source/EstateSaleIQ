@@ -5,7 +5,7 @@ import { HoneycombButton } from './ui/HoneycombButton';
 import { createClient } from '@/lib/supabase/client';
 import JSZip from 'jszip';
 import { useRouter } from 'next/navigation';
-import heic2any from 'heic2any';
+// import heic2any from 'heic2any'; // Dynamically imported instead
 
 export function UploadScanner() {
     const [uploading, setUploading] = useState(false);
@@ -60,12 +60,16 @@ export function UploadScanner() {
 
                                     if (relativePath.toLowerCase().endsWith('.heic')) {
                                         try {
+                                            // Dynamic import to avoid SSR window error
+                                            const heic2any = (await import('heic2any')).default;
+
                                             // @ts-ignore
                                             const converted = await heic2any({
                                                 blob,
                                                 toType: "image/jpeg",
                                                 quality: 0.8
                                             });
+                                            // Handle both single blob and array of blobs
                                             const resultBlob = Array.isArray(converted) ? converted[0] : converted;
                                             processedFile = new File([resultBlob], relativePath.split('/').pop()?.replace(/\.heic$/i, '.jpg') || 'image.jpg', { type: 'image/jpeg' });
                                         } catch (e) {
@@ -86,6 +90,8 @@ export function UploadScanner() {
                 }
                 else if (lowerName.endsWith('.heic') || file.type === 'image/heic') {
                     try {
+                        const heic2any = (await import('heic2any')).default;
+
                         // @ts-ignore
                         const converted = await heic2any({
                             blob: file,
