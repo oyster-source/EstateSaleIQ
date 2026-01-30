@@ -57,8 +57,8 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
 
             {/* Top Section: Image & Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                {/* Left: Image */}
-                <div className="rounded-3xl overflow-hidden border-2 border-gold-800/30 shadow-glow relative group bg-black/40 flex items-center justify-center h-96">
+                {/* Left: Image - Added p-6 to prevent border cutoff */}
+                <div className="rounded-3xl overflow-hidden border-2 border-gold-800/30 shadow-glow relative group bg-black/40 flex items-center justify-center h-96 p-6">
                     <img src={item.image_url} alt="Uploaded Item" className="w-full h-full object-contain" />
                     <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-4 py-1 rounded-full border border-gold-500/30">
                         <span className="text-gold-400 font-mono text-sm uppercase tracking-wider">{item.search_status}</span>
@@ -72,20 +72,27 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
 
                         <h2 className="text-2xl font-bold text-foreground mb-6">Valuation Estimate</h2>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 bg-black/40 rounded-xl border border-gold-500/20 text-center">
-                                <p className="text-gray-400 text-sm uppercase tracking-wider mb-1">Lowest</p>
-                                <p className="text-3xl font-bold text-red-400">${low}</p>
+                        {prices.length > 0 ? (
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-black/40 rounded-xl border border-gold-500/20 text-center">
+                                    <p className="text-gray-400 text-sm uppercase tracking-wider mb-1">Lowest</p>
+                                    <p className="text-3xl font-bold text-red-400">${low}</p>
+                                </div>
+                                <div className="p-4 bg-black/40 rounded-xl border border-gold-500/20 text-center">
+                                    <p className="text-gray-400 text-sm uppercase tracking-wider mb-1">Highest</p>
+                                    <p className="text-3xl font-bold text-green-400">${high}</p>
+                                </div>
+                                <div className="col-span-2 p-4 bg-gold-500/10 rounded-xl border border-gold-500/40 text-center shadow-glow">
+                                    <p className="text-gold-400 text-sm uppercase tracking-wider mb-1">Recommended Price</p>
+                                    <p className="text-5xl font-bold text-gold-500">${average}</p>
+                                </div>
                             </div>
-                            <div className="p-4 bg-black/40 rounded-xl border border-gold-500/20 text-center">
-                                <p className="text-gray-400 text-sm uppercase tracking-wider mb-1">Highest</p>
-                                <p className="text-3xl font-bold text-green-400">${high}</p>
+                        ) : (
+                            <div className="text-center p-8 bg-black/20 rounded-xl border border-red-500/20">
+                                <p className="text-xl text-gray-400 mb-2">No valuation data found</p>
+                                <p className="text-sm text-gray-500">We couldn't find enough comparable listings to estimate a price.</p>
                             </div>
-                            <div className="col-span-2 p-4 bg-gold-500/10 rounded-xl border border-gold-500/40 text-center shadow-glow">
-                                <p className="text-gold-400 text-sm uppercase tracking-wider mb-1">Recommended Price</p>
-                                <p className="text-5xl font-bold text-gold-500">${average}</p>
-                            </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="flex gap-4">
@@ -101,29 +108,36 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-gold-400 pl-2 border-l-4 border-gold-500">Comparable Listings Found</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {findings.map((finding: any) => (
-                        <a key={finding.id} href={finding.url} target="_blank" rel="noreferrer" className="block group">
-                            <div className="bg-honey-grid/20 border border-gold-800/20 rounded-xl p-4 flex items-center gap-4 transition-all hover:border-gold-500 hover:bg-honey-grid/40 hover:transform hover:-translate-y-1">
-                                <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0">
-                                    {finding.image_url ? (
-                                        <img src={finding.image_url} alt="" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gold-800">No Img</div>
-                                    )}
+                {findings.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {findings.map((finding: any) => (
+                            <a key={finding.id} href={finding.url} target="_blank" rel="noreferrer" className="block group">
+                                <div className="bg-honey-grid/20 border border-gold-800/20 rounded-xl p-4 flex items-center gap-4 transition-all hover:border-gold-500 hover:bg-honey-grid/40 hover:transform hover:-translate-y-1">
+                                    <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0">
+                                        {finding.image_url ? (
+                                            <img src={finding.image_url} alt="" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gold-800">No Img</div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-bold text-foreground truncate">{finding.title || finding.source}</h4>
+                                        <p className="text-sm text-gold-500/80">{finding.source}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="font-bold text-xl text-foreground">${finding.price}</p>
+                                        <span className="text-xs text-gray-500">View &rarr;</span>
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="font-bold text-foreground truncate">{finding.title || finding.source}</h4>
-                                    <p className="text-sm text-gold-500/80">{finding.source}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-bold text-xl text-foreground">${finding.price}</p>
-                                    <span className="text-xs text-gray-500">View &rarr;</span>
-                                </div>
-                            </div>
-                        </a>
-                    ))}
-                </div>
+                            </a>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="p-8 border border-dashed border-gray-700 rounded-2xl text-center">
+                        <p className="text-gray-400">No comparable listings found on the web.</p>
+                        <p className="text-sm text-gray-500 mt-2">Try uploading a clearer image or a different angle.</p>
+                    </div>
+                )}
             </div>
 
         </main>
