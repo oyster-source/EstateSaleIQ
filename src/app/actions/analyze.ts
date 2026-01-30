@@ -72,10 +72,15 @@ export async function analyzeItemPricing(itemId: string) {
         }
 
         // 4. Update item status to completed
-        await supabase
+        const { error: updateError } = await supabase
             .from('items')
             .update({ search_status: 'completed' })
             .eq('id', itemId);
+
+        if (updateError) {
+            console.error("Failed to update status to completed:", updateError);
+            throw updateError;
+        }
 
         return result;
 
@@ -83,10 +88,14 @@ export async function analyzeItemPricing(itemId: string) {
         console.error("Analysis Error:", error);
 
         // Update status to failed so it doesn't get stuck
-        await supabase
+        const { error: failUpdateError } = await supabase
             .from('items')
             .update({ search_status: 'failed' })
             .eq('id', itemId);
+
+        if (failUpdateError) {
+            console.error("Failed to update status to failed:", failUpdateError);
+        }
 
         throw error;
     }
