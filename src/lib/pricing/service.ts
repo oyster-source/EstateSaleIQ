@@ -15,56 +15,82 @@ export interface PricingResult {
 }
 
 export async function findItemPrices(imageUrl: string): Promise<PricingResult> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    const apiKey = process.env.SERPAPI_KEY;
+    if (!apiKey) {
+        console.error("SERPAPI_KEY is missing");
+        throw new Error("Server configuration error");
+    }
 
-    // Mock data generation based on random variance
-    const basePrice = Math.floor(Math.random() * 200) + 50;
+    try {
+        const params = new URLSearchParams({
+            engine: "google_lens",
+            url: imageUrl,
+            api_key: apiKey
+        });
 
-    const findings: PriceFinding[] = [
-        {
-            source: 'eBay',
-            price: basePrice,
-            currency: 'USD',
-            url: 'https://ebay.com',
-            title: 'Vintage Gold Honeycomb Item',
-            image_url: imageUrl
-        },
-        {
-            source: 'Facebook Marketplace',
-            price: Math.floor(basePrice * 0.8),
-            currency: 'USD',
-            url: 'https://facebook.com',
-            title: 'Used Item - Good Condition',
-            image_url: imageUrl
-        },
-        {
-            source: 'Etsy',
-            price: Math.floor(basePrice * 1.4),
-            currency: 'USD',
-            url: 'https://etsy.com',
-            title: 'Rare Collectible Item',
-            image_url: imageUrl
-        },
-        {
-            source: 'Chairish',
-            price: Math.floor(basePrice * 1.8),
-            currency: 'USD',
-            url: 'https://chairish.com',
-            title: 'Antique Item',
-            image_url: imageUrl
+        // Use fetch for server-side request
+        const response = await fetch(`https://serpapi.com/search?${params.toString()}`);
+
+        if (!response.ok) {
+            throw new Error(`SerpApi error: ${response.statusText}`);
         }
-    ];
 
-    const prices = findings.map(f => f.price);
-    const low = Math.min(...prices);
-    const high = Math.max(...prices);
-    const average = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+        const data = await response.json();
+        const findings: PriceFinding[] = [];
 
-    return {
-        low,
-        high,
-        average,
-        findings
-    };
+        // 1. Process Visual Matches (usually the best source for "similar items")
+        if (data.visual_matches) {
+            for (const match of data.visual_matches) {
+                if (match.price) {
+                    // Extract price value
+                    const priceValue = match.price.value ? Number(match.price.value) : extractPrice(match.price.extracted_value);
+
+                    if (!isNaN(priceValue)) {
+                        findings.push({
+                            source: match.source || 'Web',
+                            price: priceValue,
+                            currency: match.price.currency || 'USD',
+                            url: match.link,
+                            title: match.title,
+                            image_url: match.thumbnail
+                        });
+                    }
+                }
+            }
+        }
+
+        // 2. Fallback to extracting from knowledge graph if confident? (Maybe later)
+
+        // Filter outliers or duplicates if needed
+        const validFindings = findings.filter(f => f.price > 0).slice(0, 10); // Limit to top 10
+
+        if (validFindings.length === 0) {
+            // Return empty result rather than error
+            return { low: 0, high: 0, average: 0, findings: [] };
+        }
+
+        const prices = validFindings.map(f => f.price);
+        const low = Math.min(...prices);
+        const high = Math.max(...prices);
+        const average = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+
+        return {
+            low,
+            high,
+            average,
+            findings: validFindings
+        };
+
+    } catch (error) {
+        console.error("Error fetching price data:", error);
+        // Fallback to empty for now so app doesn't crash on user
+        return { low: 0, high: 0, average: 0, findings: [] };
+    }
+}
+
+function extractPrice(priceString: string | undefined): number {
+    if (!priceString) return NaN;
+    // Remove symbols and convert to number
+    const numeric = priceString.replace(/[^0-9.]/g, '');
+    return Number(numeric);
 }

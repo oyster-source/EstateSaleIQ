@@ -3,77 +3,147 @@
 import { useState, useRef } from 'react';
 import { HoneycombButton } from './ui/HoneycombButton';
 import { createClient } from '@/lib/supabase/client';
+import JSZip from 'jszip';
+import { useRouter } from 'next/navigation';
 
 export function UploadScanner() {
     const [uploading, setUploading] = useState(false);
+    const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const supabase = createClient();
+    const router = useRouter();
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return;
 
-        const file = e.target.files[0];
-        const objectUrl = URL.createObjectURL(file);
-        setPreviewUrl(objectUrl);
         setUploading(true);
+        setProgress({ current: 0, total: 0 }); // Init
 
         try {
-            // 0. Ensure Auth (Anonymous)
+            // 0. Ensure Auth
             const { data: { session } } = await supabase.auth.getSession();
             let userId = session?.user?.id;
 
             if (!userId) {
                 const { data: authData, error: authError } = await supabase.auth.signInAnonymously();
                 if (authError) {
-                    console.warn("Anonymous auth failed, trying to proceed but might fail DB constraint:", authError);
-                    // Fallback: This will fail DB insert if RLS/schema enforces it, but let's try.
+                    console.warn("Anonymous auth failed:", authError);
                 }
                 userId = authData?.user?.id;
             }
 
-            // 1. Upload image to Supabase Storage
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
-            const filePath = `${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('item-images')
-                .upload(filePath, file);
-
-            if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('item-images')
-                .getPublicUrl(filePath);
-
-            // 2. Create item record in database
             if (!userId) {
                 alert("Please sign in to save items.");
-                // For demo purposes, we might stop here or mock it.
-                // allowing failure to propagate
+                setUploading(false);
+                return;
             }
 
-            const { data: newItem, error: dbError } = await supabase
-                .from('items')
-                .insert({
-                    user_id: userId, // This must be a valid auth.users ID
-                    image_url: publicUrl,
-                    search_status: 'pending'
-                })
-                .select()
-                .single();
+            // 1. Process Files (Unzip if needed)
+            const rawFiles = Array.from(e.target.files);
+            const filesToUpload: File[] = [];
 
-            if (dbError) throw dbError;
+            for (const file of rawFiles) {
+                if (file.name.endsWith('.zip') || file.type === 'application/zip' || file.type === 'application/x-zip-compressed') {
+                    try {
+                        const zip = new JSZip();
+                        const zipContent = await zip.loadAsync(file);
 
-            // 3. Redirect to item page
-            window.location.href = `/items/${newItem.id}`;
+                        for (const relativePath in zipContent.files) {
+                            const zipEntry = zipContent.files[relativePath];
+                            if (!zipEntry.dir && !relativePath.startsWith('__MACOSX') && !relativePath.startsWith('.')) {
+                                // check extensions
+                                if (relativePath.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+                                    const blob = await zipEntry.async('blob');
+                                    const extractedFile = new File([blob], relativePath.split('/').pop() || 'image.jpg', { type: 'image/jpeg' });
+                                    filesToUpload.push(extractedFile);
+                                }
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Error unzip:", err);
+                        alert(`Failed to unzip ${file.name}`);
+                    }
+                } else {
+                    filesToUpload.push(file);
+                }
+            }
+
+            if (filesToUpload.length === 0) {
+                alert("No valid images found.");
+                setUploading(false);
+                return;
+            }
+
+            // Update preview if single file
+            if (filesToUpload.length === 1) {
+                setPreviewUrl(URL.createObjectURL(filesToUpload[0]));
+            } else {
+                setPreviewUrl(null); // Or show a stack icon
+            }
+
+            setProgress({ current: 0, total: filesToUpload.length });
+
+            // 2. Upload Loop
+            const createdItemIds: string[] = [];
+
+            for (let i = 0; i < filesToUpload.length; i++) {
+                const file = filesToUpload[i];
+
+                // Upload to Storage
+                const fileExt = file.name.split('.').pop() || 'jpg';
+                const fileName = `${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `${userId}/${Date.now()}_${fileName}`; // Organize by user/time to avoid collision
+
+                const { error: uploadError } = await supabase.storage
+                    .from('item-images')
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    console.error(`Failed to upload ${file.name}:`, uploadError);
+                    continue; // Skip this one
+                }
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('item-images')
+                    .getPublicUrl(filePath);
+
+                // Create DB Record
+                const { data: newItem, error: dbError } = await supabase
+                    .from('items')
+                    .insert({
+                        user_id: userId,
+                        image_url: publicUrl,
+                        search_status: 'pending'
+                    })
+                    .select()
+                    .single();
+
+                if (dbError) {
+                    console.error(`Failed to create item for ${file.name}:`, dbError);
+                } else {
+                    createdItemIds.push(newItem.id);
+                }
+
+                setProgress({ current: i + 1, total: filesToUpload.length });
+            }
+
+            // 3. Redirect
+            if (createdItemIds.length === 1) {
+                router.push(`/items/${createdItemIds[0]}`);
+            } else if (createdItemIds.length > 1) {
+                router.push('/items');
+            } else {
+                alert("No items were successfully uploaded.");
+            }
 
         } catch (error) {
             console.error('Error uploading:', error);
-            alert('Error uploading or saving item. Check console for details.');
+            alert('Error uploading. Check console.');
         } finally {
             setUploading(false);
+            setProgress(null);
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -81,9 +151,9 @@ export function UploadScanner() {
         <div className="flex flex-col items-center gap-6 p-8 border border-gold-800/30 rounded-3xl bg-honey-grid/20 backdrop-blur-sm max-w-md w-full mx-auto animate-fade-in">
             <div
                 className="w-64 h-64 border-2 border-dashed border-gold-600/50 rounded-2xl flex items-center justify-center relative overflow-hidden group hover:border-gold-500 transition-colors cursor-pointer bg-black/20"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => !uploading && fileInputRef.current?.click()}
             >
-                {previewUrl ? (
+                {previewUrl && !uploading ? (
                     <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
                     <div className="text-center p-4">
@@ -93,14 +163,19 @@ export function UploadScanner() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
-                        <p className="text-gold-400 font-medium">Click to Upload Photo</p>
-                        <p className="text-xs text-gray-500 mt-2">or take a picture</p>
+                        <p className="text-gold-400 font-medium">Click to Upload</p>
+                        <p className="text-xs text-gray-500 mt-2">Photos or Zip files</p>
                     </div>
                 )}
 
                 {uploading && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-2 p-4 text-center">
                         <div className="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
+                        {progress && progress.total > 0 && (
+                            <p className="text-gold-400 font-bold text-lg">
+                                Processing {progress.current} / {progress.total}
+                            </p>
+                        )}
                     </div>
                 )}
             </div>
@@ -109,8 +184,8 @@ export function UploadScanner() {
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileSelect}
-                accept="image/*"
-                capture="environment"
+                accept="image/*,.zip,application/zip,application/x-zip-compressed"
+                multiple
                 className="hidden"
             />
 
@@ -119,8 +194,10 @@ export function UploadScanner() {
                 className="w-full"
                 disabled={uploading}
             >
-                {uploading ? 'Processing...' : previewUrl ? 'Retake Photo' : 'Select Photo'}
+                {uploading ? 'Processing...' : previewUrl ? 'Scan More' : 'Select Photos or Zip'}
             </HoneycombButton>
+
+            <p className="text-xs text-gray-500">Supports JPG, PNG, WEBP, and ZIP archives</p>
         </div>
     );
 }
