@@ -40,21 +40,40 @@ export async function findItemPrices(imageUrl: string): Promise<PricingResult> {
 
         // 1. Process Visual Matches (usually the best source for "similar items")
         if (data.visual_matches) {
-            for (const match of data.visual_matches) {
-                if (match.price) {
-                    // Extract price value
-                    const priceValue = match.price.value ? Number(match.price.value) : extractPrice(match.price.extracted_value);
+            console.log(`Found ${data.visual_matches.length} visual matches`);
 
-                    if (!isNaN(priceValue)) {
-                        findings.push({
-                            source: match.source || 'Web',
-                            price: priceValue,
-                            currency: match.price.currency || 'USD',
-                            url: match.link,
-                            title: match.title,
-                            image_url: match.thumbnail
-                        });
+            for (const match of data.visual_matches) {
+                let priceValue = NaN;
+                let currency = 'USD';
+
+                // Case A: Structured price object (Best)
+                if (match.price) {
+                    if (match.price.value) {
+                        priceValue = Number(match.price.value);
+                    } else if (match.price.extracted_value) {
+                        priceValue = Number(match.price.extracted_value);
                     }
+                    if (match.price.currency) currency = match.price.currency;
+                }
+
+                // Case B: Try to extract from title if no price object (Fallback)
+                if (isNaN(priceValue) && match.title) {
+                    // very basic regex for $XX.XX
+                    const priceMatch = match.title.match(/\$(\d{1,3}(,\d{3})*(\.\d{2})?)/);
+                    if (priceMatch) {
+                        priceValue = Number(priceMatch[1].replace(/,/g, ''));
+                    }
+                }
+
+                if (!isNaN(priceValue) && priceValue > 0) {
+                    findings.push({
+                        source: match.source || 'Web',
+                        price: priceValue,
+                        currency: currency,
+                        url: match.link,
+                        title: match.title,
+                        image_url: match.thumbnail
+                    });
                 }
             }
         }
