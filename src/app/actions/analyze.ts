@@ -44,9 +44,38 @@ export async function analyzeItemPricing(itemId: string) {
             throw new Error('Item not found');
         }
 
-        // 2. Perform search
-        console.log(`Analyzing item ${itemId} with image: ${item.image_url}`);
-        const result = await findItemPrices(item.image_url);
+        // 2. Prepare Image URL (Use Signed URL to ensure access)
+        let searchImageUrl = item.image_url;
+
+        try {
+            // Extract path from public URL to generate a signed URL
+            // URL format: .../storage/v1/object/public/item-images/[path]
+            const publicMarker = '/item-images/';
+            const markerIndex = item.image_url.indexOf(publicMarker);
+
+            if (markerIndex !== -1) {
+                const storagePath = item.image_url.substring(markerIndex + publicMarker.length);
+                if (storagePath) {
+                    console.log(`Generating signed URL for path: ${storagePath}`);
+                    const { data: signedData, error: signedError } = await supabase
+                        .storage
+                        .from('item-images')
+                        .createSignedUrl(storagePath, 3600); // 1 hour validity
+
+                    if (signedError) {
+                        console.warn("Failed to generate signed URL:", signedError);
+                    } else if (signedData?.signedUrl) {
+                        searchImageUrl = signedData.signedUrl;
+                        console.log("Using signed URL for search");
+                    }
+                }
+            }
+        } catch (urlError) {
+            console.warn("Error processing image URL:", urlError);
+        }
+
+        console.log(`Analyzing item ${itemId} with image: ${searchImageUrl}`);
+        const result = await findItemPrices(searchImageUrl);
         console.log(`Found ${result.findings.length} matches`);
 
         // 3. Save findings (only if we have any)
