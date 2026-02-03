@@ -103,10 +103,13 @@ export async function analyzeItemPricing(itemId: string) {
             }
         }
 
-        // 4. Update item status to completed
+        // 4. Update item status to completed and log debug info
         const { error: updateError } = await supabase
             .from('items')
-            .update({ search_status: 'completed' })
+            .update({
+                search_status: 'completed',
+                description: `Debug: Found ${result.findings.length} matches. Source: ${result.findings[0]?.source || 'None'}`
+            })
             .eq('id', itemId);
 
         if (updateError) {
@@ -122,7 +125,10 @@ export async function analyzeItemPricing(itemId: string) {
         // Update status to failed so it doesn't get stuck
         const { error: failUpdateError } = await supabase
             .from('items')
-            .update({ search_status: 'failed' })
+            .update({
+                search_status: 'failed',
+                description: `Debug Error: ${error instanceof Error ? error.message : String(error)}`
+            })
             .eq('id', itemId);
 
         if (failUpdateError) {
