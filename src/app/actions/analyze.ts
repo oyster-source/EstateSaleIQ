@@ -54,7 +54,10 @@ export async function analyzeItemPricing(itemId: string) {
             const markerIndex = item.image_url.indexOf(publicMarker);
 
             if (markerIndex !== -1) {
-                const storagePath = item.image_url.substring(markerIndex + publicMarker.length);
+                let storagePath = item.image_url.substring(markerIndex + publicMarker.length);
+                storagePath = decodeURIComponent(storagePath); // Fix: Handle encoded spaces/chars
+                if (storagePath.startsWith('/')) storagePath = storagePath.substring(1); // Fix: Remove leading slash if present
+
                 if (storagePath) {
                     console.log(`Generating signed URL for path: ${storagePath}`);
                     const { data: signedData, error: signedError } = await supabase
