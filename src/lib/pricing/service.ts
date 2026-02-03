@@ -38,47 +38,31 @@ export async function findItemPrices(imageUrl: string): Promise<PricingResult> {
         const data = await response.json();
         const findings: PriceFinding[] = [];
 
-        // 1. Process Visual Matches (usually the best source for "similar items")
-        if (data.visual_matches) {
-            console.log(`Found ${data.visual_matches.length} visual matches`);
+        // 1. Process Visual Matches (Google Lens)
+        if (data.visual_matches && data.visual_matches.length > 0) {
+            processMatches(data.visual_matches, findings);
+        }
 
-            for (const match of data.visual_matches) {
-                let priceValue = NaN;
-                let currency = 'USD';
-
-                // Case A: Structured price object (Best)
-                if (match.price) {
-                    if (match.price.value) {
-                        priceValue = Number(match.price.value);
-                    } else if (match.price.extracted_value) {
-                        priceValue = Number(match.price.extracted_value);
-                    }
-                    if (match.price.currency) currency = match.price.currency;
+        // 2. FALLBACK: If no findings, try Google Reverse Image (better for some items)
+        if (findings.length === 0) {
+            console.log("No Lens matches found. Switch to Reverse Image Search...");
+            const fallbackParams = new URLSearchParams({
+                engine: "google_reverse_image",
+                image_url: imageUrl, // Uses 'image_url' param
+                api_key: apiKey
+            });
+            const fallbackRes = await fetch(`https://serpapi.com/search?${fallbackParams.toString()}`);
+            if (fallbackRes.ok) {
+                const fallbackData = await fallbackRes.json();
+                // Reverse image often puts matches in 'image_results' or 'inline_images'
+                if (fallbackData.image_results) {
+                    processMatches(fallbackData.image_results, findings);
                 }
-
-                // Case B: Try to extract from title if no price object (Fallback)
-                if (isNaN(priceValue) && match.title) {
-                    // very basic regex for $XX.XX
-                    const priceMatch = match.title.match(/\$(\d{1,3}(,\d{3})*(\.\d{2})?)/);
-                    if (priceMatch) {
-                        priceValue = Number(priceMatch[1].replace(/,/g, ''));
-                    }
-                }
-
-                if (!isNaN(priceValue) && priceValue > 0) {
-                    findings.push({
-                        source: match.source || 'Web',
-                        price: priceValue,
-                        currency: currency,
-                        url: match.link,
-                        title: match.title,
-                        image_url: match.thumbnail
-                    });
+                if (fallbackData.shopping_results) {
+                    processMatches(fallbackData.shopping_results, findings);
                 }
             }
         }
-
-        // 2. Fallback to extracting from knowledge graph if confident? (Maybe later)
 
         // Filter outliers or duplicates if needed
         const validFindings = findings.filter(f => f.price > 0).slice(0, 10); // Limit to top 10
@@ -112,4 +96,39 @@ function extractPrice(priceString: string | undefined): number {
     // Remove symbols and convert to number
     const numeric = priceString.replace(/[^0-9.]/g, '');
     return Number(numeric);
+}
+
+function processMatches(matches: any[], findings: PriceFinding[]) {
+    for (const match of matches) {
+        let priceValue = NaN;
+        let currency = 'USD';
+
+        // Case A: Structured price object (Best)
+        if (match.price) {
+            // Check extracted_value first as it's usually cleaner
+            if (match.price.extracted_value) {
+                priceValue = Number(match.price.extracted_value);
+            } else if (match.price.value) {
+                // Parse "AED 500*" or "$10.00"
+                priceValue = extractPrice(match.price.value);
+            }
+            if (match.price.currency) currency = match.price.currency;
+        }
+
+        // Case B: Try to extract from title if no price object (Fallback)
+        if (isNaN(priceValue) && match.title) {
+            priceValue = extractPrice(match.title);
+        }
+
+        if (!isNaN(priceValue) && priceValue > 0) {
+            findings.push({
+                source: match.source || 'Web',
+                price: priceValue,
+                currency: currency,
+                url: match.link || match.link_url, // some engines use link_url
+                title: match.title,
+                image_url: match.thumbnail || match.image // some use image
+            });
+        }
+    }
 }
