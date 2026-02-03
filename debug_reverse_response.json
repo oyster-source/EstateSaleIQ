@@ -1,0 +1,217 @@
+{
+  "search_metadata": {
+    "id": "69818967f357f64ba3fa6027",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/J4v_Rg_aKc-OMPCspmBF5g/69818967f357f64ba3fa6027.json",
+    "created_at": "2026-02-03 05:36:39 UTC",
+    "processed_at": "2026-02-03 05:36:39 UTC",
+    "google_reverse_image_url": "https://www.google.com/searchbyimage?image_url=https://uyrttfpxkoqybpukhglt.supabase.co/storage/v1/object/sign/item-images/268ba2ea-d863-43c5-ae0c-ef138db2980d/debug_test_1770096996638.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFjZmJiYi0xNGY5LTQ3NDItOTFkMi0wOTVkODhkZTU4ZTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpdGVtLWltYWdlcy8yNjhiYTJlYS1kODYzLTQzYzUtYWUwYy1lZjEzOGRiMjk4MGQvZGVidWdfdGVzdF8xNzcwMDk2OTk2NjM4LmpwZyIsImlhdCI6MTc3MDA5Njk5NSwiZXhwIjoxNzcwMTAwNTk1fQ.3uDcYnIsW5JaJ2PucZRhVAWQWS6hKZQwF6RuRlDKDiU&sbisrc=cr_1_5_2",
+    "raw_html_file": "https://serpapi.com/searches/J4v_Rg_aKc-OMPCspmBF5g/69818967f357f64ba3fa6027.html",
+    "total_time_taken": 2.21
+  },
+  "search_parameters": {
+    "engine": "google_reverse_image",
+    "image_url": "https://uyrttfpxkoqybpukhglt.supabase.co/storage/v1/object/sign/item-images/268ba2ea-d863-43c5-ae0c-ef138db2980d/debug_test_1770096996638.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFjZmJiYi0xNGY5LTQ3NDItOTFkMi0wOTVkODhkZTU4ZTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpdGVtLWltYWdlcy8yNjhiYTJlYS1kODYzLTQzYzUtYWUwYy1lZjEzOGRiMjk4MGQvZGVidWdfdGVzdF8xNzcwMDk2OTk2NjM4LmpwZyIsImlhdCI6MTc3MDA5Njk5NSwiZXhwIjoxNzcwMTAwNTk1fQ.3uDcYnIsW5JaJ2PucZRhVAWQWS6hKZQwF6RuRlDKDiU",
+    "google_domain": "google.com",
+    "device": "desktop"
+  },
+  "search_information": {
+    "total_results": 306000000,
+    "time_taken_displayed": 0.51,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "image_results": [
+    {
+      "position": 1,
+      "title": "Cameras & Gear | Photography Articles | NYIP",
+      "link": "https://www.nyip.edu/photo-articles/cameras-and-gear",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.nyip.edu/photo-articles/cameras-and-gear&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCM0DEAE&usg=AOvVaw0C_zEmVkg4pLuLNvleB9Cn",
+      "displayed_link": "https://www.nyip.edu › Photo Articles",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQLS48yl_hkgq9_e6ZTl83nSir6dNVKWLW9ASBn-0&usqp=CAE&s",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/uPEZA6JOFp1wSAecLC-TGNBZovmUBwrF9ue7Nndv0fk.png",
+      "snippet": "As we all know, great lighting technique can make or break a photo. So as aspiring professionals, one of the best things you can do is learn as much as…",
+      "snippet_highlighted_words": [
+        "great lighting technique can make or break a photo"
+      ],
+      "source": "New York Institute of Photography"
+    },
+    {
+      "position": 2,
+      "title": "Sony Cameras | Digital Cameras & Lenses",
+      "link": "https://electronics.sony.com/imaging/interchangeable-lens-cameras/c/all-interchangeable-lens-cameras?srsltid=AfmBOoo5s-wf4hTUyMuzJccsqSEvQeGAIrxjKiQv4gE_1GzjXg9Uwemx",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://electronics.sony.com/imaging/interchangeable-lens-cameras/c/all-interchangeable-lens-cameras%3Fsrsltid%3DAfmBOoo5s-wf4hTUyMuzJccsqSEvQeGAIrxjKiQv4gE_1GzjXg9Uwemx&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMsDEAE&usg=AOvVaw0hXGlHVQHkSSMsg_BLnM-Y",
+      "displayed_link": "https://electronics.sony.com › imaging › all-interchange...",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/3oOZivHACtkVyUErbPEa80PNr3-L0ujlHU2cxIWaGRA.png",
+      "snippet": "Explore our range of mirrorless Interchangeable-lens Cameras with full-frame to APS-C sensors, up to 24.2 mp, real-time AF & more.",
+      "snippet_highlighted_words": [
+        "our range of mirrorless Interchangeable-lens Cameras"
+      ],
+      "rich_snippet": {
+        "bottom": {
+          "detected_extensions": {
+            "price_from": 1000,
+            "price_to": 7000,
+            "currency": "$",
+            "rating": 4.9,
+            "reviews": 23
+          },
+          "extensions": [
+            "4.9 store rating (23)",
+            "$1,000 to $7,000",
+            "Free delivery",
+            "Free 30-day returns"
+          ]
+        }
+      },
+      "source": "Sony Electronics"
+    },
+    {
+      "position": 3,
+      "title": "Pairing vintage lenses with digital cameras",
+      "link": "https://photofocus.com/photography/pairing-vintage-lenses-with-digital-cameras/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://photofocus.com/photography/pairing-vintage-lenses-with-digital-cameras/&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMUDEAE&usg=AOvVaw2kzCR_mcXic-1k2B9q-Znq",
+      "displayed_link": "https://photofocus.com › photography › pairing-vintag...",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/LZHp1-BQwZT6VpjfOHurB_ccYUxbTDuOT5b_y6o1Vmo.png",
+      "snippet": "One of the things that keep me shooting with film is the distinct nostalgic look it gives my photos. I'm sure that there's a sustained interest in this ...",
+      "snippet_highlighted_words": [
+        "distinct nostalgic look it gives my photos"
+      ],
+      "source": "Photofocus"
+    },
+    {
+      "position": 4,
+      "title": "Dear Sony - Thank you for the mirrorless camera revolution",
+      "link": "https://www.youtube.com/watch?v=y8cajlPczk0",
+      "displayed_link": "45.8K+ views · 7 years ago",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRDXwvzWWi2LuXcZgKRZav5Q1o31XyWbuDXZE1pkdMK9CcIDen3IZChg&s",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/FYiWkmTWX101X2fNk4-qFPsDjpQe45v6eTtESjNeT24.png",
+      "snippet": "This is how Sony created the Mirrorless revolution, came out on top and has paved the way for the next Mirrorless camera innovators.",
+      "duration": "6:43",
+      "key_moments": [
+        {
+          "time": "00:16",
+          "title": "How Sony built the mirrorless revolution",
+          "link": "https://www.youtube.com/watch?v=y8cajlPczk0&t=16",
+          "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5tIytyk5mK0RpM3K7UiQFYAO4wQpqS-gbst1hE113eQ&s"
+        },
+        {
+          "time": "02:46",
+          "title": "The Sony of the last 5 years",
+          "link": "https://www.youtube.com/watch?v=y8cajlPczk0&t=166",
+          "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROXfI3MO1vi85XFzamY3pD3maAitEuZ_dR80-pMtqvpw&s"
+        },
+        {
+          "time": "06:07",
+          "title": "Conclusion",
+          "link": "https://www.youtube.com/watch?v=y8cajlPczk0&t=367",
+          "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQy7F0C_RdHgfHEk67P8ihEAZqGPdUEw6m5fATPuGW6EA&s"
+        }
+      ],
+      "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcT0QhIdAzG-EFh26YAGdEr5vXZPA7Ti4AEt_w",
+      "source": "YouTube · Ed Gregory"
+    },
+    {
+      "position": 5,
+      "title": "Sony | Alpha Universe",
+      "link": "https://alphauniverse.com/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://alphauniverse.com/&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMgDEAE&usg=AOvVaw2KqdQtiyNYK2gOMa_J-Oea",
+      "displayed_link": "https://alphauniverse.com",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/uSG6PnOokN3tlYJUD-AHLf3IZ___FULFCYbTSXawSoM.png",
+      "snippet": "Alpha Universe is for creators. Bring your curiosity, we will provide knowledge, inspiration & state-of-the-art imaging tech to help you make dreams ...",
+      "snippet_highlighted_words": [
+        "Alpha Universe"
+      ],
+      "source": "Sony | Alpha Universe"
+    },
+    {
+      "position": 6,
+      "title": "CameraMall",
+      "link": "https://cameramall.com/?srsltid=AfmBOooGRcXVHyldQVnHMezloJcyy2RzpRTGVerY1hy_Q6bBVoepVdjr",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://cameramall.com/%3Fsrsltid%3DAfmBOooGRcXVHyldQVnHMezloJcyy2RzpRTGVerY1hy_Q6bBVoepVdjr&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMYDEAE&usg=AOvVaw3BZfOIP0762bCYCHbSurKo",
+      "displayed_link": "https://cameramall.com",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/pBq7ZHURbQmjj9xuQhS7jQ89o6ySP8GbAaNtbNgOFjQ.png",
+      "snippet": "Shop our products Open-Box Cameras, Lenses, & Accessories Sometimes customers purchase a camera or lens, and it's just not the right fit.",
+      "snippet_highlighted_words": [
+        "Shop our products"
+      ],
+      "source": "CameraMall"
+    },
+    {
+      "position": 7,
+      "title": "Unique Photo",
+      "link": "https://www.uniquephoto.com/?srsltid=AfmBOopK9V4QESgY6NS5I1HlQU-r8TL1IsYrUiermGfujtQ1Unty7FOo",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.uniquephoto.com/%3Fsrsltid%3DAfmBOopK9V4QESgY6NS5I1HlQU-r8TL1IsYrUiermGfujtQ1Unty7FOo&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMkDEAE&usg=AOvVaw3hBe3wuDa4HfnDQ2VtlmcN",
+      "displayed_link": "https://www.uniquephoto.com",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/akv15dsNqDOKgRwAQseA8d9eRPtOQ5rG-uXxyb5cesA.png",
+      "snippet": "Join our community of professional photographers. Unique University is excited to expand its range of professional photography courses.",
+      "snippet_highlighted_words": [
+        "professional photography"
+      ],
+      "source": "Unique Photo"
+    },
+    {
+      "position": 8,
+      "title": "The Best Sony Cameras and Lenses in 2025 -",
+      "link": "https://www.bergreenphotography.com/the-best-sony-cameras-and-lenses-in-2024/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.bergreenphotography.com/the-best-sony-cameras-and-lenses-in-2024/&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCOoDEAE&usg=AOvVaw34AkdqZFtAY6FX0HCO5nO2",
+      "displayed_link": "https://www.bergreenphotography.com › the-best-sony-...",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/4DIybSt2zwhD6EvtIj7Lkk_R6PSzJC07y2jNzpVkJZc.png",
+      "snippet": "In this article, I'm going to share the best Sony cameras and lenses in 2025. Whether you're a vlogger or a wedding photographer, this line-up will help you ...",
+      "snippet_highlighted_words": [
+        "best Sony cameras and lenses in 2025"
+      ],
+      "source": "bergreenphotography.com"
+    },
+    {
+      "position": 9,
+      "title": "Midwest Photo - Capture. Inspire. Share.",
+      "link": "https://mpex.com/?srsltid=AfmBOoqyMqPFFtYqoxFjXBkRHUbG07sFmeS1a9RDuiZmhZanupAfqNTM",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://mpex.com/%3Fsrsltid%3DAfmBOoqyMqPFFtYqoxFjXBkRHUbG07sFmeS1a9RDuiZmhZanupAfqNTM&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMoDEAE&usg=AOvVaw04gjH3GM_e3osEprvw6Dk5",
+      "displayed_link": "https://mpex.com",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/-xPLeTqDOA3LCUIU8DY2l9Zjtp1MuztoqgujqWBXKUk.png",
+      "snippet": "Canon R6 Mark III IN STOCK NOW! ... Exclusive Gear In-Store Only At Midwest! Nation-Wide Film Development Now Available · MPEX Rentals · Pre-Orders Open ...",
+      "snippet_highlighted_words": [
+        "Canon R6 Mark III IN STOCK NOW"
+      ],
+      "rich_snippet": {
+        "bottom": {
+          "detected_extensions": {
+            "rating": 4.8,
+            "reviews": 485
+          },
+          "extensions": [
+            "4.8 store rating (485)",
+            "Free delivery over $99",
+            "15-day returns"
+          ]
+        }
+      },
+      "source": "Midwest Photo"
+    },
+    {
+      "position": 10,
+      "title": "Welcome to Paul's Photo, Torrance, CA",
+      "link": "https://paulsphoto.com/?srsltid=AfmBOop7WXfF8bL79K-5dr9ap76oZ4p8x5HPMkRJ63weRLpB0hke3FKk",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://paulsphoto.com/%3Fsrsltid%3DAfmBOop7WXfF8bL79K-5dr9ap76oZ4p8x5HPMkRJ63weRLpB0hke3FKk&ved=2ahUKEwi9r-OXzbySAxWyz_ACHSq_KVIQFnoFCMcDEAE&usg=AOvVaw3l2Pc1muwmLcznNP3Sic3w",
+      "displayed_link": "https://paulsphoto.com",
+      "favicon": "https://serpapi.com/searches/69818967f357f64ba3fa6027/images/cm78VutxoXHhYnGuEd-5ncMFQxTHGK2_1Ii6cdeuAjg.png",
+      "snippet": "PAUL'S PHOTO is your neighborhood camera store. No matter where you live. We help you photograph your life.",
+      "snippet_highlighted_words": [
+        "PAUL'S PHOTO is your neighborhood camera store"
+      ],
+      "rich_snippet": {
+        "bottom": {
+          "detected_extensions": {
+            "rating": 5,
+            "reviews": 375
+          },
+          "extensions": [
+            "5.0 store rating (375)",
+            "14-day returns"
+          ]
+        }
+      },
+      "source": "Paul's Photo"
+    }
+  ]
+}

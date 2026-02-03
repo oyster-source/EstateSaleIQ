@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-8 text-center relative overflow-hidden">
+    <main className="flex flex-col items-center justify-start min-h-[calc(100vh-4rem)] p-8 pt-12 text-center relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-secondary/5 rounded-full blur-[120px] pointer-events-none" />
 
